@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom Alert Box</title>
+    <style>
+        /* Basic styling for the alert box */
+        #customAlert {
+            display: none;
+            position: fixed;
+            top: 30%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 320px;
+            background-color: white;
+            border: 1px solid #ccc;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            text-align: center;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: Arial, sans-serif;
+            cursor: default;
+        }
+        #customAlertHeader {
+            cursor: move;
+            background-color: #f0f0f0;
+            padding: 5px 10px;
+            text-align: left;
+            font-weight: bold;
+            border-bottom: 1px solid #ccc;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        #alertTitle {
+            font-size: 18px;
+            font-weight: bold;
+            margin: 0;
+        }
+        #closeButton {
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: bold;
+            color: #555;
+            border: none;
+            background: none;
+        }
+        #closeButton:hover {
+            color: red;
+        }
+        #customAlertIcon {
+            margin-bottom: 10px;
+            font-size: 48px; /* Emojis will be larger */
+        }
+        #customAlertMessage {
+            margin-bottom: 20px;
+        }
+        #customAlertButtons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+        #customAlertButtons button {
+            padding: 10px 15px;
+            border: 1px solid #ccc;
+            background-color: #f0f0f0;
+            color: black;
+            cursor: pointer;
+            border-radius: 4px;
+            min-width: 60px;
+        }
+        #customAlertButtons button:hover {
+            background-color: #e0e0e0;
+        }
+    </style>
+</head>
+<body>
+    <h1 style="border: 2px solid Turquoise;"><font color="white">Error Message Generator</font></h1>
+    <label for="titleInput"><font color="white">Title</label>
+    <input type="text" id="titleInput" placeholder="Enter the title">
+    <br><br>
+    <label for="messageInput">Message:</label>
+    <input type="text" id="messageInput" placeholder="Enter the message">
+    <br><br>
+    <label for="typeInput">Type (error, success, warning):</label>
+    <input type="text" id="typeInput" placeholder="Enter message type">
+    <br><br>
+    <label for="buttonsInput">Buttons (comma separated):</label>
+    <input type="text" id="buttonsInput" placeholder="Enter button labels (e.g., OK, Cancel)">
+    <br><br>
+    <label for="iconUrlInput">URL Image Icon:</label>
+    <input type="text" id="iconUrlInput" placeholder="Enter image URL for custom icon">
+    <br><br>
+    <button onclick="showCustomAlert()">Show Alert</button>
+
+    <!-- Custom alert box -->
+    <div id="customAlert">
+        <div id="customAlertHeader" onmousedown="startDrag(event)">
+            <span id="alertTitle">Custom Alert</span>
+            <button id="closeButton" onclick="closeAlert()">×</button>
+        </div>
+        <div id="customAlertIcon">ℹ️</div> <!-- Icon Placeholder -->
+        <div id="customAlertMessage">Message</div>
+        <div id="customAlertButtons"></div>
+    </div>
+
+    <script>
+        // Function to show the custom alert
+        function showCustomAlert() {
+            const title = document.getElementById('titleInput').value;
+            const message = document.getElementById('messageInput').value;
+            const type = document.getElementById('typeInput').value.toLowerCase();
+            const buttonLabels = document.getElementById('buttonsInput').value.split(',');
+            const customIconUrl = document.getElementById('iconUrlInput').value;
+
+            // Set the title (non-editable) in the header
+            document.getElementById('alertTitle').textContent = title || 'Custom Alert';
+
+            // Set the message
+            document.getElementById('customAlertMessage').textContent = message || 'Message';
+
+            // Set the icon: Check if a custom icon URL is provided, otherwise use predefined types
+            const iconElement = document.getElementById('customAlertIcon');
+            if (customIconUrl) {
+                iconElement.innerHTML = `<img src="${customIconUrl}" alt="Icon" style="width: 48px; height: 48px;">`; // Custom icon URL
+            } else {
+                // Set emoji based on type
+                switch (type) {
+                    case 'error':
+                        iconElement.textContent = '❌'; // Error icon
+                        iconElement.style.color = 'red';
+                        break;
+                    case 'success':
+                        iconElement.textContent = '✅'; // Success icon
+                        iconElement.style.color = 'green';
+                        break;
+                    case 'warning':
+                        iconElement.textContent = '⚠️'; // Warning icon
+                        iconElement.style.color = 'orange';
+                        break;
+                    default:
+                        iconElement.textContent = 'ℹ️'; // Default info icon
+                        iconElement.style.color = 'blue';
+                        break;
+                }
+            }
+
+            // Clear existing buttons and add new ones
+            const buttonsContainer = document.getElementById('customAlertButtons');
+            buttonsContainer.innerHTML = ''; // Clear previous buttons
+            buttonLabels.forEach(label => {
+                if (label.trim() !== '') {
+                    const button = document.createElement('button');
+                    button.textContent = label.trim();
+                    button.onclick = closeAlert; // Set onclick to close alert
+                    buttonsContainer.appendChild(button);
+                }
+            });
+
+            // Display the alert box
+            document.getElementById('customAlert').style.display = 'block';
+        }
+
+        // Function to close the custom alert
+        function closeAlert() {
+            document.getElementById('customAlert').style.display = 'none';
+        }
+
+        // Drag functionality
+        let isDragging = false;
+        let offsetX, offsetY;
+
+        function startDrag(e) {
+            isDragging = true;
+            offsetX = e.clientX - document.getElementById('customAlert').offsetLeft;
+            offsetY = e.clientY - document.getElementById('customAlert').offsetTop;
+            document.addEventListener('mousemove', drag);
+            document.addEventListener('mouseup', stopDrag);
+        }
+
+        function drag(e) {
+            if (isDragging) {
+                const alertBox = document.getElementById('customAlert');
+                alertBox.style.left = `${e.clientX - offsetX}px`;
+                alertBox.style.top = `${e.clientY - offsetY}px`;
+                alertBox.style.transform = 'none'; // Disable centering during drag
+            }
+        }
+
+        function stopDrag() {
+            isDragging = false;
+            document.removeEventListener('mousemove', drag);
+            document.removeEventListener('mouseup', stopDrag);
+        }
+    </script>
+    <style>
+body {
+  background-image: url('https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExeXZpMjdhZWM5anIwZ2R3eXowaGp4M3Z5ZGsxdWw4Y2lwajRoNzQ5ayZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/KVZWZQoS0yqfIiTAKq/giphy.webp');
+  background-repeat: no-repeat;
+  background-attachment: fixed;  
+  background-size: cover;
+}
+</style>
+</body>
+</html>

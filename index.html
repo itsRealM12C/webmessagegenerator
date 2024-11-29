@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alert Box Generator</title>
+</head>
+<body>
+
+    <h1 style="border: 2px solid Turquoise;"><font color="white">Generate pop-up messages!</font></h1>
+
+
+    <!-- Inputs for customizing the alert message -->
+    <label for="titleInput"><font color="white">Title:</label>
+    <input type="text" id="titleInput" placeholder="Enter the title">
+    <br><br>
+
+    <label for="messageInput">Message:</label>
+    <input type="text" id="messageInput" placeholder="Enter the message">
+    <br><br>
+
+    <label for="promptCheckbox">Enable Prompt (Enter username):</label>
+    <input type="checkbox" id="promptCheckbox">
+    <br><br>
+
+    <!-- Button to show the alert -->
+    <button onclick="showAlert()">Show Alert</button>
+
+    <script>
+        function showAlert() {
+            // Get title and message inputs
+            const title = document.getElementById('titleInput').value || 'Default Title';
+            const message = document.getElementById('messageInput').value || 'Default Message';
+
+            // Display the native Chrome alert
+            alert(`${title}\n\n${message}`);
+
+            // Check if the prompt checkbox is checked
+            if (document.getElementById('promptCheckbox').checked) {
+                // If checked, show the native prompt asking for a username
+                const username = prompt('Enter username');
+
+                // Display the username in the alert message
+                if (username) {
+                    alert(`You entered: ${username}`);
+                      // Get the input value
+            const message = document.getElementById('messageInput').value;
+            
+                }
+            }
+        }
+    </script>
+    <style>
+body {
+  background-image: url('https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExeXZpMjdhZWM5anIwZ2R3eXowaGp4M3Z5ZGsxdWw4Y2lwajRoNzQ5ayZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/KVZWZQoS0yqfIiTAKq/giphy.webp');
+  background-repeat: no-repeat;
+  background-attachment: fixed;  
+  background-size: cover;
+}
+</style>
+<a href="https://itsrealm12c.github.io/webmessagegenerator/errormessagegenerator.html"> Click here to try error message generator too!
+</body>
+</html>
+
+    
